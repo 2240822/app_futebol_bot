@@ -76,3 +76,19 @@ button.sec {
   padding: 12px; border-radius: 10px; border: 1px solid var(--line);
   background: var(--card); color: var(--ink);
 }
+
+.fact { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; font-variant-numeric: tabular-nums; }
+.fact + .fact { border-top: 1px solid var(--line); }
+.fact span:first-child { color: var(--mut); }
+.note { color: var(--mut); font-size: 14px; margin: 10px 0 0; }
+
+.tbl { background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.th, .tr { display: grid; grid-template-columns: 1.7fr 1fr 1fr .8fr; gap: 8px; padding: 10px 14px; font-size: 14px; align-items: center; font-variant-numeric: tabular-nums; }
+.th { color: var(--mut); border-bottom: 1px solid var(--line); }
+.tr + .tr { border-top: 1px solid var(--line); }
+.tr small { display: block; color: var(--mut); }
+.th span:not(:first-child), .tr span:not(:first-child) { text-align: right; }
+
+.wk { display: grid; grid-template-columns: 44px 1fr 74px; gap: 8px; align-items: center; font-size: 14px; padding: 3px 0; font-variant-numeric: tabular-nums; }
+.wk i { display: block; height: 10px; border-radius: 5px; background: var(--ink); opacity: .8; }
+.wk span:last-child { text-align: right; }

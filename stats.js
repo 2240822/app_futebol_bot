@@ -59,7 +59,7 @@ export function weeklyStaked(bets) {
   for (const b of bets.filter(isPlaced)) {
     const d = new Date(b.date); d.setHours(0, 0, 0, 0);
     d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
-    const k = d.toISOString().slice(0, 10);
+    const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     weeks[k] = (weeks[k] || 0) + b.stake;
   }
   return Object.entries(weeks).sort().map(([week, staked]) => ({ week, staked }));

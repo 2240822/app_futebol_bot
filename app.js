@@ -192,12 +192,80 @@ $("file").addEventListener("change", e => {
   e.target.value = "";
 });
 
+const ODD_ORDER = ["Até 1,50", "1,50 a 2,00", "2,00 a 3,00", "3,00 a 5,00", "Acima de 5,00"];
+const pctS = x => Math.round(x * 100) + "%";
+const cls = n => (n > 0 ? "pos" : n < 0 ? "neg" : "");
+
+function table(rows) {
+  if (!rows.length) return '<p class="sub">Sem dados.</p>';
+  return `<div class="tbl"><div class="th"><span>Nome</span><span>Apostado</span><span>Lucro</span><span>ROI</span></div>` +
+    rows.map(r => `<div class="tr">
+      <span>${esc(r.key)}<small>${r.count} ${r.count === 1 ? "aposta" : "apostas"}</small></span>
+      <span>${eur(r.staked)}</span>
+      <span class="${cls(r.profit)}">${sgn(r.profit)}</span>
+      <span class="${cls(r.roi)}">${r.roi === null ? "–" : (r.roi * 100).toFixed(0) + "%"}</span>
+    </div>`).join("") + "</div>";
+}
+
+function renderAnalysis() {
+  const s = st.summary(bets);
+  const closed = bets.filter(b => b.status === "won" || b.status === "lost");
+  const fact = (k, v, c = "") => `<div class="fact"><span>${k}</span><b class="${c}">${v}</b></div>`;
+
+  let html = "";
+  if (!closed.length) {
+    html = '<p class="sub">Fecha algumas apostas (ganha ou perdida) para ver a análise.</p>';
+  } else {
+    const wins = closed.filter(b => b.status === "won").length;
+    const diff = s.hitRate - s.breakEvenRate;
+    const k = st.streaks(bets);
+    html += fact("Acerto real", `${pctS(s.hitRate)} (${wins}/${closed.length})`);
+    html += fact("Acerto necessário", pctS(s.breakEvenRate));
+    html += fact("Diferença", `${diff > 0 ? "+" : ""}${Math.round(diff * 100)} pp`, cls(diff));
+    html += fact("Retorno (ROI)", s.roi === null ? "–" : (s.roi * 100).toFixed(1).replace(".", ",") + "%", cls(s.roi));
+    html += fact("Odd média", s.avgOdd.toFixed(2).replace(".", ","));
+    html += fact("Stake médio", eur(s.avgStake));
+    html += fact("Série atual", k.current > 0 ? `${k.current} vitórias seguidas` : k.current < 0 ? `${-k.current} derrotas seguidas` : "–");
+    html += fact("Melhor / pior série", `${k.bestWin} V / ${k.bestLoss} D`);
+    html += fact("Maior queda", eur(st.maxDrawdown(st.cumulativeSeries(bets))));
+
+    const wp = closed.filter(b => b.prob > 0);
+    if (wp.length) {
+      const exp = wp.reduce((a, b) => a + b.stake * (b.prob / 100 * b.odd - 1), 0);
+      const real = wp.reduce((a, b) => a + st.profitOf(b), 0);
+      html += fact(`Esperado (${wp.length} apostas com probabilidade)`, sgn(exp), cls(exp));
+      html += fact("Real nessas apostas", sgn(real), cls(real));
+      html += `<p class="note">${wp.length < 30
+        ? "Amostra pequena: a sorte pesa muito. Só tira conclusões com 30 ou mais apostas."
+        : real < exp - 0.1 * Math.abs(exp) - 1
+          ? "O real está abaixo do esperado: podes estar a sobrestimar as tuas probabilidades."
+          : "O real está em linha com (ou acima de) o esperado."}</p>`;
+    }
+  }
+  $("an-overview").innerHTML = html;
+
+  const rows = keyFn => st.groupBy(bets, keyFn).filter(r => r.count > 0);
+  $("an-market").innerHTML = table(rows(b => b.market));
+  $("an-book").innerHTML = table(rows(b => b.book));
+  $("an-odd").innerHTML = table(
+    rows(st.oddBucket).sort((a, b) => ODD_ORDER.indexOf(a.key) - ODD_ORDER.indexOf(b.key)));
+
+  const weeks = st.weeklyStaked(bets).slice(-8);
+  const max = Math.max(...weeks.map(w => w.staked), 1);
+  $("an-weeks").innerHTML = weeks.length
+    ? weeks.map(w => `<div class="wk"><span>${w.week.slice(8)}/${w.week.slice(5, 7)}</span>
+        <i style="width:${(w.staked / max * 100).toFixed(0)}%"></i><span>${eur(w.staked)}</span></div>`).join("") +
+      '<p class="note">Cada linha é uma semana, a começar à segunda-feira. Mostra as últimas 8.</p>'
+    : "Sem dados.";
+}
+
 /* ---------- arranque ---------- */
 function render() {
   renderSummary();
   renderChart();
   renderBreakdown();
   renderList();
+  renderAnalysis();
 }
 $("date").value = todayStr();
 render();

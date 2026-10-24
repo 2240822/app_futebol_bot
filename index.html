@@ -1,77 +1,100 @@
 <!doctype html>
 <html lang="pt-PT">
+
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Caderneta de apostas</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Caderneta de apostas</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <main>
-    <section id="t-resumo" class="tab on">
-      <p class="label">Lucro total</p>
-      <p class="big" id="profit">0,00 €</p>
-      <p class="sub">Apostado: <b id="staked">0,00 €</b> · <span id="count">0</span> apostas</p>
-      <p class="sub" id="periods"></p>
-      <p class="sub" id="rates"></p>
-      <div class="card" id="chart">O gráfico aparece aqui.</div>
-      <h2>Por mês</h2>
-      <div id="breakdown"></div>
-    </section>
+    <main>
+        <section id="t-resumo" class="tab on">
+            <p class="label">Lucro total</p>
+            <p class="big" id="profit">0,00 €</p>
+            <p class="sub">Apostado: <b id="staked">0,00 €</b> · <span id="count">0</span> apostas</p>
+            <p class="sub" id="periods"></p>
+            <p class="sub" id="rates"></p>
+            <div class="card" id="chart">O gráfico aparece aqui.</div>
+            <h2>Por mês</h2>
+            <div id="breakdown"></div>
+        </section>
 
-    <section id="t-apostas" class="tab">
-      <h2>Apostas</h2>
-      <div id="list"></div>
-    </section>
+        <section id="t-apostas" class="tab">
+            <h2>Apostas</h2>
+            <div id="list"></div>
+        </section>
 
-    <section id="t-nova" class="tab">
-      <h2>Nova aposta</h2>
-      <div class="row">
-        <div><label for="stake">Stake (€)</label>
-          <input id="stake" type="number" inputmode="decimal" step="0.01" min="0"></div>
-        <div><label for="odd">Odd total</label>
-          <input id="odd" type="number" inputmode="decimal" step="0.01" min="1"></div>
-      </div>
-      <div class="prev" id="prev">Preenche o stake e a odd para ver a análise.</div>
+        <section id="t-nova" class="tab">
+            <h2>Nova aposta</h2>
+            <div class="row">
+                <div><label for="stake">Stake (€)</label>
+                    <input id="stake" type="number" inputmode="decimal" step="0.01" min="0">
+                </div>
+                <div><label for="odd">Odd total</label>
+                    <input id="odd" type="number" inputmode="decimal" step="0.01" min="1">
+                </div>
+            </div>
+            <div class="prev" id="prev">Preenche o stake e a odd para ver a análise.</div>
 
-      <label for="desc">Jogo ou descrição</label>
-      <input id="desc" placeholder="Ex.: Sporting vs Benfica">
-      <div class="row">
-        <div><label for="market">Mercado</label>
-          <select id="market">
-            <option>Vitória casa</option><option>Empate</option><option>Vitória fora</option>
-            <option>Mais de 2,5 golos</option><option>Menos de 2,5 golos</option>
-            <option>Ambas marcam</option><option>Handicap</option><option>Múltipla</option><option>Outro</option>
-          </select></div>
-        <div><label for="book">Casa de apostas</label><input id="book" placeholder="Betclic"></div>
-      </div>
-      <div class="row">
-        <div><label for="date">Data</label><input id="date" type="date"></div>
-        <div><label for="prob">A minha probabilidade (%)</label>
-          <input id="prob" type="number" inputmode="decimal" step="1" min="1" max="99" placeholder="opcional"></div>
-      </div>
-      <button class="main" id="add">Guardar aposta</button>
-    </section>
+            <label for="desc">Jogo ou descrição</label>
+            <input id="desc" placeholder="Ex.: Sporting vs Benfica">
+            <div class="row">
+                <div><label for="market">Mercado</label>
+                    <select id="market">
+                        <option>Vitória casa</option>
+                        <option>Empate</option>
+                        <option>Vitória fora</option>
+                        <option>Mais de 2,5 golos</option>
+                        <option>Menos de 2,5 golos</option>
+                        <option>Ambas marcam</option>
+                        <option>Handicap</option>
+                        <option>Múltipla</option>
+                        <option>Outro</option>
+                    </select>
+                </div>
+                <div><label for="book">Casa de apostas</label><input id="book" placeholder="Betclic"></div>
+            </div>
+            <div class="row">
+                <div><label for="date">Data</label><input id="date" type="date"></div>
+                <div><label for="prob">A minha probabilidade (%)</label>
+                    <input id="prob" type="number" inputmode="decimal" step="1" min="1" max="99" placeholder="opcional">
+                </div>
+            </div>
+            <button class="main" id="add">Guardar aposta</button>
+        </section>
 
-    <section id="t-analise" class="tab">
-      <h2>Análise</h2>
-      <h2>Cópia de segurança</h2>
-      <p class="sub">Os dados ficam só neste telemóvel. Exporta de vez em quando, e sempre antes de limpar os dados do navegador.</p>
-      <div class="row">
-        <button class="sec" id="exp">Exportar</button>
-        <button class="sec" id="imp">Importar</button>
-      </div>
-      <input type="file" id="file" accept="application/json" hidden>
-    </section>
-  </main>
+        <section id="t-analise" class="tab">
+            <h2>Análise</h2>
+            <div class="card" id="an-overview"></div>
+            <h2>Por mercado</h2>
+            <div id="an-market"></div>
+            <h2>Por casa</h2>
+            <div id="an-book"></div>
+            <h2>Por faixa de odd</h2>
+            <div id="an-odd"></div>
+            <h2>Apostado por semana</h2>
+            <div class="card" id="an-weeks"></div>
+            <h2>Cópia de segurança</h2>
+            <p class="sub">Os dados ficam só neste telemóvel. Exporta de vez em quando, e sempre antes de limpar os
+                dados do navegador.</p>
+            <div class="row">
+                <button class="sec" id="exp">Exportar</button>
+                <button class="sec" id="imp">Importar</button>
+            </div>
+            <input type="file" id="file" accept="application/json" hidden>
+        </section>
+    </main>
 
-  <nav id="nav">
-    <button data-tab="resumo" class="on">Resumo</button>
-    <button data-tab="apostas">Apostas</button>
-    <button data-tab="nova">Nova</button>
-    <button data-tab="analise">Análise</button>
-  </nav>
+    <nav id="nav">
+        <button data-tab="resumo" class="on">Resumo</button>
+        <button data-tab="apostas">Apostas</button>
+        <button data-tab="nova">Nova</button>
+        <button data-tab="analise">Análise</button>
+    </nav>
 
-  <script type="module" src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
+
 </html>
